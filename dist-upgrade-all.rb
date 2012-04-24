@@ -36,7 +36,7 @@ end
 
 def hosts
   hosts = Array.new
-  servers = %w{arcee astrotrain blaster blitzwing broadside cliffjumper ironhide jazz laserbeak mirage prime prowl ravage rumble}
+  servers = %w{arcee astrotrain blaster blitzwing broadside cliffjumper inferno ironhide jazz laserbeak mirage prime prowl ravage rumble}
   servers += %w{bizox csd cw-production cw-staging imeducate imports101 mg synaptor tapdoctor}
   servers += %w{ilca-lb ilca-db ilca-web-01 ilca-web-02}
   servers.each do |s|
