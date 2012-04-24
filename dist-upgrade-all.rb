@@ -26,6 +26,11 @@ class Terminal
     run command
   end
 
+  def maximize
+    # This depends on Alfred.app
+    app('System Events').application_processes['Terminal.app'].keystroke('m', :using => [:command_down, :option_down, :control_down])
+  end
+
   def run(command)
     command = command.shelljoin if command.is_a?(Array)
     if command && !command.empty?
@@ -60,6 +65,7 @@ Terminal.new do |t|
     sleep 1
     if first == true
       t.tab(cmd(h.login, h.name), 'n')
+      t.maximize
       first = false
     else
       t.tab(cmd(h.login, h.name))
