@@ -46,16 +46,23 @@ def hosts
   hosts << Host.new('mail.ilc.com.au')
 end
 
+def cmd(login, name)
+  monit_off = 'if [ -x "/usr/sbin/monit" ]; then echo "[MONIT] Unmonitoring all services" && sudo /usr/sbin/monit unmonitor all && sleep 10; fi'
+  monit_on  = 'if [ -x "/usr/sbin/monit" ]; then echo "[MONIT] Monitoring all services" && sudo /usr/sbin/monit monitor all; fi'
+  aptitude = "sudo aptitude update && sudo aptitude dist-upgrade -y && sudo aptitude clean"
+  # "ssh #{login}@#{name} -t '#{monit_off} && #{aptitude} && #{monit_on} && exit' && exit"
+  "ssh #{login}@#{name} -t '#{aptitude} && exit' && exit"
+end
+
 first = true
 Terminal.new do |t|
   hosts.each do |h|
     sleep 1
-    cmd = "ssh #{h.login}@#{h.name} -t 'sudo aptitude update && sudo aptitude dist-upgrade -y && sudo aptitude clean && exit' && exit"
     if first == true
-      t.tab(cmd, 'n')
+      t.tab(cmd(h.login, h.name), 'n')
       first = false
     else
-      t.tab(cmd)
+      t.tab(cmd(h.login, h.name))
     end
   end
 end
