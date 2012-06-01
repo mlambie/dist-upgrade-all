@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
+require 'bundler'
 require 'shellwords'
 require 'appscript'
 
