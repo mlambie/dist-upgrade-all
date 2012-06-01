@@ -56,7 +56,7 @@ def cmd(login, name)
   monit_off = 'if [ -x "/usr/sbin/monit" ]; then echo "[MONIT] Unmonitoring all services" && sudo /usr/sbin/monit unmonitor all && sleep 10; fi'
   monit_on  = 'if [ -x "/usr/sbin/monit" ]; then echo "[MONIT] Monitoring all services" && sudo /usr/sbin/monit monitor all; fi'
   aptitude = "sudo aptitude update && sudo aptitude dist-upgrade -y && sudo aptitude clean"
-  "ssh #{login}@#{name} -t '#{monit_off} && #{aptitude} && #{monit_on} && exit' && exit"
+  "ssh #{login}@#{name} -t 'clear && #{monit_off} && #{aptitude} && #{monit_on} && exit' && exit"
   # "ssh #{login}@#{name} -t '#{aptitude} && exit' && exit"
 end
 
