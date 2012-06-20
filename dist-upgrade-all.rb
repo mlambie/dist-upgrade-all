@@ -5,6 +5,8 @@ require 'bundler'
 require 'shellwords'
 require 'appscript'
 
+DEBUG = false
+
 class Host
   attr_reader :name, :login
   def initialize(name, login = 'mlambie')
@@ -60,12 +62,22 @@ def hosts
   hosts
 end
 
-def cmd(login, name)
+def cmd_exec(login, name)
   monit_off = 'if [ -x "/usr/sbin/monit" ]; then echo "[MONIT] Unmonitoring all services" && sudo /usr/sbin/monit unmonitor all && sleep 10; fi'
   monit_on  = 'if [ -x "/usr/sbin/monit" ]; then echo "[MONIT] Monitoring all services" && sudo /usr/sbin/monit monitor all; fi'
   aptitude = "sudo aptitude update && sudo aptitude dist-upgrade -y && sudo aptitude clean"
   "ssh #{login}@#{name} -t 'clear && #{monit_off} && #{aptitude} && #{monit_on} && exit' && exit"
   # "ssh #{login}@#{name} -t '#{aptitude} && exit' && exit"
+end
+
+def cmd_echo(login, name)
+  "echo TRACE: ssh #{login}@#{name} && sleep 10 && exit"
+end
+
+if DEBUG
+  alias :cmd :cmd_echo
+else
+  alias :cmd :cmd_exec
 end
 
 first = true
