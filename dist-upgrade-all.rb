@@ -42,14 +42,22 @@ end
 
 def hosts
   hosts = Array.new
-  servers = %w{arcee astrotrain blaster blitzwing broadside cliffjumper inferno ironhide jazz laserbeak mirage prime prowl ravage rumble}
-  servers += %w{bizox csd cw-production cw-staging imeducate imports101 mg synaptor tapdoctor}
-  servers += %w{ilca-lb ilca-db ilca-web-01 ilca-web-02}
-  servers.each do |s|
-    hosts << Host.new("#{s}.thefrontiergroup.net.au") 
+  begin
+    IO.readlines('./hosts.conf').each do |line|
+      # Strip out anything that's a comment
+      line = line.sub(/#.*/, "").strip
+      next if line.empty?
+      if line.include?("@")
+        line = line.split("@")
+        hosts << Host.new(line[1], line[0])
+      else
+        hosts << Host.new(line)
+      end
+    end
+  rescue Exception => e
+    abort "ERROR: #{e}"
   end
-  6.times {|x| hosts << Host.new("ipv-app-0#{x + 1}.thefrontiergroup.net.au", 'ipv') }
-  hosts << Host.new('mail.ilc.com.au')
+  hosts
 end
 
 def cmd(login, name)
