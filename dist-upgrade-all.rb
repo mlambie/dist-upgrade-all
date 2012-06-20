@@ -30,7 +30,7 @@ class Terminal
   end
 
   def maximize
-    # This depends on Alfred.app
+    # This depends on Divvy
     app('System Events').application_processes['Terminal.app'].keystroke('m', :using => [:command_down, :option_down, :control_down])
   end
 
