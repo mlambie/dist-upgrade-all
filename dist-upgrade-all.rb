@@ -4,6 +4,7 @@ require 'rubygems'
 require 'bundler'
 require 'shellwords'
 require 'appscript'
+require 'slop'
 
 DEBUG = false
 
@@ -63,11 +64,15 @@ def hosts
 end
 
 def cmd_exec(login, name)
-  monit_off = 'if [ -x "/usr/sbin/monit" ]; then echo "[MONIT] Unmonitoring all services" && sudo /usr/sbin/monit unmonitor all && sleep 10; fi'
-  monit_on  = 'if [ -x "/usr/sbin/monit" ]; then echo "[MONIT] Monitoring all services" && sudo /usr/sbin/monit monitor all; fi'
+  if @opts.monit?
+    monit_off = 'if [ -x "/usr/sbin/monit" ]; then echo "[MONIT] Unmonitoring all services" && sudo /usr/sbin/monit unmonitor all && sleep 10; fi'
+    monit_on  = 'if [ -x "/usr/sbin/monit" ]; then echo "[MONIT] Monitoring all services" && sudo /usr/sbin/monit monitor all; fi'
+  else
+    monit_off = monit_on = 'echo -n'
+  end
   aptitude = "sudo aptitude update && sudo aptitude dist-upgrade -y && sudo aptitude clean"
+
   "ssh #{login}@#{name} -t 'clear && #{monit_off} && #{aptitude} && #{monit_on} && exit' && exit"
-  # "ssh #{login}@#{name} -t '#{aptitude} && exit' && exit"
 end
 
 def cmd_echo(login, name)
@@ -78,6 +83,10 @@ if DEBUG
   alias :cmd :cmd_echo
 else
   alias :cmd :cmd_exec
+end
+
+@opts = Slop.parse do
+  on :m, :monit, 'Your password', :optional_argument => true
 end
 
 first = true
