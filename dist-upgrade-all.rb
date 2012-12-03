@@ -46,7 +46,7 @@ end
 def hosts
   hosts = Array.new
   begin
-    IO.readlines('./hosts.conf').each do |line|
+    IO.readlines(File.join(File.dirname(__FILE__), 'hosts.conf')).each do |line|
       # Strip out anything that's a comment
       line = line.sub(/#.*/, "").strip
       next if line.empty?
