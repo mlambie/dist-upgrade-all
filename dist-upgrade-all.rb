@@ -10,7 +10,7 @@ DEBUG = false
 
 class Host
   attr_reader :name, :login
-  def initialize(name, login = 'mlambie')
+  def initialize(name, login = ENV['USER'])
     @name = name
     @login = login
   end
