@@ -71,7 +71,7 @@ def cmd_exec(login, name)
     monit_off = monit_on = 'echo -n'
   end
   aptitude = "sudo aptitude update && sudo aptitude dist-upgrade -y && sudo aptitude clean"
-
+  
   "ssh #{login}@#{name} -t 'clear && #{monit_off} && #{aptitude} && #{monit_on} && exit' && exit"
 end
 
